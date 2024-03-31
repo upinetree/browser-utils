@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Copy URL as Markdown",
+  "version": "1.0",
+  "description": "Copy URL as Markdown link from current tab",
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_icon": "icon-128.png",
+    "default_title": "Copy URL as Markdown"
+  },
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "permissions": ["contextMenus", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>"]
+}
