@@ -1,4 +1,5 @@
 const formats = ["markdown", "scrapbox", "html"];
+const default_format = "markdown";
 
 formats.forEach((format) => {
   chrome.contextMenus.create({
@@ -8,41 +9,46 @@ formats.forEach((format) => {
   });
 });
 
-let format = "markdown";
+const copyScript = async (format, url, title) => {
+  const text = (() => {
+    switch (format) {
+      case "markdown":
+        return `[${title}](${url})`;
 
-chrome.contextMenus.onClicked.addListener((info) => {
-  format = info.menuItemId;
+      case "scrapbox":
+        return `[${title} ${url}]`;
+
+      case "html":
+        return `<a href="${url}">${title}</a>`;
+
+      default:
+        return url;
+    }
+  })();
+
+  await navigator.clipboard.writeText(text).then(
+    function () {
+      console.log("Copying to clipboard was successful!, format:", format);
+    },
+    function (err) {
+      console.error("Could not copy text:", err);
+    }
+  );
+};
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  const format = info.menuItemId;
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: copyScript,
+    args: [format, tab.url, tab.title],
+  });
 });
 
 chrome.action.onClicked.addListener((tab) => {
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    function: async (format, url, title) => {
-      const text = (() => {
-        switch (format) {
-          case "markdown":
-            return `[${title}](${url})`;
-
-          case "scrapbox":
-            return `[${title} ${url}]`;
-
-          case "html":
-            return `<a href="${url}">${title}</a>`;
-
-          default:
-            return url;
-        }
-      })();
-
-      await navigator.clipboard.writeText(text).then(
-        function () {
-          console.log("Copying to clipboard was successful!");
-        },
-        function (err) {
-          console.error("Could not copy text: ", err);
-        }
-      );
-    },
-    args: [format, tab.url, tab.title],
+    function: copyScript,
+    args: [default_format, tab.url, tab.title],
   });
 });
