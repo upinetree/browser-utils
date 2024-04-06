@@ -29,12 +29,27 @@ const copyScript = async (format, url, title) => {
   await navigator.clipboard.writeText(text).then(
     function () {
       console.log("Copying to clipboard was successful!, format:", format);
+      chrome.runtime.sendMessage({
+        action: "showNotification",
+        text,
+      });
     },
     function (err) {
       console.error("Could not copy text:", err);
     }
   );
 };
+
+chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
+  if (request.action === "showNotification") {
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: "icon-128.png",
+      title: "Copied!",
+      message: request.text,
+    });
+  }
+});
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   const format = info.menuItemId;
@@ -46,9 +61,10 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 chrome.action.onClicked.addListener((tab) => {
+  const format = default_format;
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: copyScript,
-    args: [default_format, tab.url, tab.title],
+    args: [format, tab.url, tab.title],
   });
 });
