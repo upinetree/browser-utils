@@ -42,11 +42,15 @@ const copyScript = async (format, url, title) => {
 
 chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
   if (request.action === "showNotification") {
-    chrome.notifications.create({
-      type: "basic",
-      iconUrl: "icon-128.png",
-      title: "Copied!",
-      message: request.text,
+    chrome.storage.sync.get("notifications", function (data) {
+      if (data.notifications) {
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "icon-128.png",
+          title: "Copied!",
+          message: request.text,
+        });
+      }
     });
   }
 });

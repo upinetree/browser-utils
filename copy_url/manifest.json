@@ -13,6 +13,16 @@
     "48": "icon-48.png",
     "128": "icon-128.png"
   },
-  "permissions": ["contextMenus", "scripting", "tabs", "notifications"],
-  "host_permissions": ["<all_urls>"]
+  "permissions": [
+    "contextMenus",
+    "scripting",
+    "tabs",
+    "notifications",
+    "storage"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
 }
