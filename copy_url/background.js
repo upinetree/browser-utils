@@ -31,6 +31,7 @@ const copyScript = async (format, url, title) => {
       console.log("Copying to clipboard was successful!, format:", format);
       chrome.runtime.sendMessage({
         action: "showNotification",
+        format,
         text,
       });
     },
@@ -47,7 +48,7 @@ chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
         chrome.notifications.create({
           type: "basic",
           iconUrl: "icon-128.png",
-          title: "Copied!",
+          title: `Copied as ${request.format}!`,
           message: request.text,
         });
       }
@@ -64,9 +65,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   });
 });
 
-chrome.action.onClicked.addListener((tab) => {
-  const format = default_format;
-  chrome.scripting.executeScript({
+chrome.action.onClicked.addListener(async (tab) => {
+  const data = await chrome.storage.sync.get("format");
+  const format = data.format || default_format;
+
+  await chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: copyScript,
     args: [format, tab.url, tab.title],

@@ -4,11 +4,23 @@
     <title>Extension Options</title>
   </head>
   <body>
-    <label>
-      <input type="checkbox" id="notifications" />
-      Enable notifications
-    </label>
+    <div>
+      <label>
+        <input type="checkbox" id="notifications" />
+        Enable notifications
+      </label>
+    </div>
 
+    <div>
+      <label>
+        Select default format:
+        <select id="format">
+          <option value="markdown">markdown</option>
+          <option value="scrapbox">scrapbox</option>
+          <option value="html">html</option>
+        </select>
+      </label>
+    </div>
     <script src="options.js"></script>
   </body>
 </html>
