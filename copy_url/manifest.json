@@ -17,6 +17,7 @@
     "contextMenus",
     "scripting",
     "tabs",
+    "clipboardWrite",
     "notifications",
     "storage"
   ],

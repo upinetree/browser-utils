@@ -66,10 +66,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
-  const data = await chrome.storage.sync.get("format");
-  const format = data.format || default_format;
+  const { format = default_format } = await chrome.storage.sync.get("format");
 
-  await chrome.scripting.executeScript({
+  chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: copyScript,
     args: [format, tab.url, tab.title],
